@@ -1,23 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Speech to Text</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Speech to Text</h1>
+    <main class="container">
 
-<button id="startButton">Start Recording</button>
-<button id="stopButton">Stop Recording</button>
+        <h1>Speech to Text</h1>
 
-<p id="status">Ready</p>
+        <p>
+            Record your voice and receive a full transcription.
+        </p>
 
-<h2>Transcription</h2>
+        <div class="controls">
 
-<div id="transcription"></div>
+            <button id="startButton">
+                Start 
+            </button>
 
-<script src="script.js"></script>
+            <button id="stopButton" disabled>
+                Stop 
+            </button>
+
+        </div>
+
+        <p id="status">
+            Ready
+        </p>
+
+        <section>
+            <h2>Transcription</h2>
+
+            <div
+                id="transcription"
+                class="transcription"
+                aria-live="polite"
+            >
+                Your transcription will appear here.
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
