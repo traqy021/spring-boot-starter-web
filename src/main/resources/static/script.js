@@ -100,7 +100,6 @@ function stopRecording() {
     }
 }
 
-
 async function handleRecordingStopped() {
 
     const audioBlob =
@@ -118,11 +117,63 @@ async function handleRecordingStopped() {
             .forEach(track => track.stop());
     }
 
-    transcription.textContent =
-        `Recorded ${audioBlob.size} bytes of audio.`;
-
     statusText.textContent =
-        "Recording complete.";
+        "Uploading audio...";
 
-    startButton.disabled = false;
+    transcription.textContent =
+        "Waiting for transcription...";
+
+    try {
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "file",
+            audioBlob,
+            "recording.webm"
+        );
+
+        const response =
+            await fetch(
+                "/api/v1/transcribe",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+        const result =
+            await response.json();
+
+        transcription.textContent =
+            result.text;
+
+        statusText.textContent =
+            "Transcription complete.";
+    }
+    catch (error) {
+
+        console.error(
+            "Upload failed:",
+            error
+        );
+
+        transcription.textContent =
+            "Unable to transcribe recording.";
+
+        statusText.textContent =
+            "Error.";
+    }
+    finally {
+
+        startButton.disabled = false;
+        stopButton.disabled = true;
+    }
 }
