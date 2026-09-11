@@ -115,7 +115,7 @@ public class TranscriptionService {
         String text =
                 response
                     .path("text")
-                    .asText();
+                    .asString();
 
 
         JsonNode usage =
