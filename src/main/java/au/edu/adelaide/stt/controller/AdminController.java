@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import au.edu.adelaide.stt.exception.ShutdownInProgressException;
 
 import au.edu.adelaide.stt.model.ShutdownResponse;
 import au.edu.adelaide.stt.model.UptimeResponse;
@@ -51,25 +52,12 @@ public class AdminController {
                 shutdownService
                     .requestShutdown();
 
-
         if (!accepted) {
-
-            return ResponseEntity
-                    .status(
-                        HttpStatus.CONFLICT
-                    )
-                    .body(
-                        new ShutdownResponse(
-                            "Graceful shutdown is already in progress."
-                        )
-                    );
+            throw new ShutdownInProgressException();
         }
 
-
         return ResponseEntity
-                .status(
-                    HttpStatus.ACCEPTED
-                )
+                .status(HttpStatus.ACCEPTED)
                 .body(
                     new ShutdownResponse(
                         "Graceful shutdown requested."
