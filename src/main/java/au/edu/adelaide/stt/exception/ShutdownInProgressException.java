@@ -6,7 +6,7 @@ public class ShutdownInProgressException
     public ShutdownInProgressException() {
 
         super(
-            "Shutting down is already in progress."
+        	"Graceful shutdown is already in progress."
         );
     }
 }
