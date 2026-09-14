@@ -12,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,9 +72,7 @@ class ConcurrentHttpRequestTest {
                 );
 
         HttpClient client =
-                HttpClient.newBuilder()
-                    .executor(executor)
-                    .build();
+                HttpClient.newHttpClient();
 
 
         CountDownLatch ready =
@@ -148,7 +147,10 @@ class ConcurrentHttpRequestTest {
 
             assertEquals(
                 200,
-                future.get()
+                future.get(
+                	    20,
+                	    TimeUnit.SECONDS
+                	)
             );
         }
 
@@ -169,5 +171,14 @@ class ConcurrentHttpRequestTest {
 
 
         executor.shutdown();
+
+        if (
+            !executor.awaitTermination(
+                5,
+                TimeUnit.SECONDS
+            )
+        ) {
+            executor.shutdownNow();
+        }
     }
 }
