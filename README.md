@@ -42,13 +42,26 @@ one simultaneous shutdown request can initiate shutdown.
 
 ## Testing
 
-StatisticsServiceTest checks normal counter accumulation.
+* StatisticsServiceTest checks normal counter accumulation.
 
-StatisticsConcurrencyTest deliberately starts 250 threads
+* StatisticsConcurrencyTest deliberately starts 250 threads
 simultaneously and verifies that no token updates are lost.
 
-This regression test protects against race conditions in the global
-statistics implementation.
+* AdminControllerTest verifies uptime responses and both successful
+and conflicting shutdown responses.
+
+* StatsControllerTest verifies the YAML-compatible global token
+statistics response.
+
+* TranscriptionControllerTest uses a mocked transcription service,
+allowing REST regression testing without requiring a real OpenAI key.
+
+* ConcurrentHttpRequestTest issues 250 concurrent blocking HTTP
+requests against an embedded Spring server and verifies that all
+requests complete successfully.
+
+* StatisticsConcurrencyTest deliberately performs 250 simultaneous
+counter updates to detect lost-update race conditions.
 
 ## API Endpoints
 

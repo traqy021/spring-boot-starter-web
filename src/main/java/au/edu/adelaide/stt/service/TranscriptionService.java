@@ -2,6 +2,8 @@ package au.edu.adelaide.stt.service;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -15,6 +17,12 @@ import au.edu.adelaide.stt.model.TranscriptionResponse;
 
 @Service
 public class TranscriptionService {
+	
+	// Adding production logging 
+	private static final Logger LOGGER =
+            LoggerFactory.getLogger(
+                    TranscriptionService.class
+            );
 
     private final RestClient openAiRestClient;
 
@@ -36,6 +44,11 @@ public class TranscriptionService {
     public TranscriptionResponse transcribe(
             MultipartFile file
     ) throws IOException {
+    	
+    	 LOGGER.info(
+                 "Received transcription request, size={} bytes",
+                 file.getSize()
+         );
 
         if (file.isEmpty()) {
             throw new IllegalArgumentException(
@@ -86,6 +99,10 @@ public class TranscriptionService {
                 .contentType(
                     MediaType.APPLICATION_OCTET_STREAM
                 );
+        
+        LOGGER.debug(
+                "Sending transcription request to Cloud STT service"
+        );
 
 
         JsonNode response =
@@ -105,6 +122,10 @@ public class TranscriptionService {
 
 
         if (response == null) {
+        	
+        	 LOGGER.error(
+                     "Cloud STT service returned no response"
+             );
 
             throw new IllegalStateException(
                     "Cloud transcription returned no response."
@@ -135,6 +156,16 @@ public class TranscriptionService {
         statisticsService.addUsage(
                 inputTokens,
                 outputTokens
+        );
+        
+        LOGGER.debug(
+                "Recorded token usage: inputTokens={}, outputTokens={}",
+                inputTokens,
+                outputTokens
+        );
+
+        LOGGER.info(
+                "Cloud transcription completed successfully"
         );
 
 
